@@ -305,7 +305,7 @@ python coding_plan/example.py all
 | 模块 | 功能 | 端点 |
 |------|------|------|
 | music_generation | Music 2.6 | `/v1/music_generation` |
-| music_generation | Music Cover | `/v1/music_cover` |
+| music_generation | Music Cover | `/v1/music_generation` |
 | music_generation | Lyrics Generation | `/v1/lyrics_generation` |
 | image_generation | Image 01 | `/v1/image_generation` |
 | coding_plan | Coding Plan VLM | `/v1/coding_plan_vlm` |

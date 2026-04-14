@@ -1,6 +1,9 @@
 import requests
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Literal
 
+
+# api参考网址：
+# https://platform.minimaxi.com/docs/api-reference/lyrics-generation
 
 class LyricsGeneration:
     BASE_URL = "https://api.minimaxi.com"
@@ -12,12 +15,9 @@ class LyricsGeneration:
 
     def generate(
         self,
+        mode: Literal["write_full_song", "edit"],
         prompt: str,
         model: str = "lyrics_generation",
-        genre: Optional[str] = None,
-        theme: Optional[str] = None,
-        max_tokens: int = 1024,
-        temperature: float = 0.8,
         timeout: int = 30,
     ) -> Dict[str, Any]:
         """
@@ -26,12 +26,9 @@ class LyricsGeneration:
         根据提示词生成完整的歌词内容
 
         Args:
+            mode: 生成模式，可选 "write_full_song"（创作新歌词）或 "edit"（编辑现有歌词）
             prompt: 歌词描述或主题提示词
             model: 模型名称，默认 lyrics_generation
-            genre: 音乐流派（如 "pop", "rock", "ballad"），可选
-            theme: 歌词主题（如 "love", "nature", "life"），可选
-            max_tokens: 最大生成 token 数，默认 1024
-            temperature: 温度参数，默认 0.8
             timeout: 超时时间，默认 30 秒
 
         Returns:
@@ -47,15 +44,9 @@ class LyricsGeneration:
 
         payload = {
             "model": model,
+            "mode": mode,
             "prompt": prompt,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
         }
-
-        if genre is not None:
-            payload["genre"] = genre
-        if theme is not None:
-            payload["theme"] = theme
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
@@ -104,6 +95,34 @@ class LyricsGeneration:
                 "base_resp": {"status_code": -4, "status_msg": str(e)},
             }
 
+    def write_full_song(self, prompt: str, model: str = "lyrics_generation", timeout: int = 30) -> Dict[str, Any]:
+        """
+        创作完整歌词
+
+        Args:
+            prompt: 歌词描述或主题提示词
+            model: 模型名称，默认 lyrics_generation
+            timeout: 超时时间，默认 30 秒
+
+        Returns:
+            包含生成歌词的字典
+        """
+        return self.generate(mode="write_full_song", prompt=prompt, model=model, timeout=timeout)
+
+    def edit(self, prompt: str, model: str = "lyrics_generation", timeout: int = 30) -> Dict[str, Any]:
+        """
+        编辑歌词
+
+        Args:
+            prompt: 歌词编辑提示词
+            model: 模型名称，默认 lyrics_generation
+            timeout: 超时时间，默认 30 秒
+
+        Returns:
+            包含生成歌词的字典
+        """
+        return self.generate(mode="edit", prompt=prompt, model=model, timeout=timeout)
+
 
 class LyricsGenerationHighspeed:
     BASE_URL = "https://api.minimaxi.com"
@@ -115,12 +134,9 @@ class LyricsGenerationHighspeed:
 
     def generate(
         self,
+        mode: Literal["write_full_song", "edit"],
         prompt: str,
         model: str = "lyrics_generation-highspeed",
-        genre: Optional[str] = None,
-        theme: Optional[str] = None,
-        max_tokens: int = 1024,
-        temperature: float = 0.8,
         timeout: int = 30,
     ) -> Dict[str, Any]:
         """
@@ -129,13 +145,10 @@ class LyricsGenerationHighspeed:
         效果不变，更快更敏捷
 
         Args:
+            mode: 生成模式，可选 "write_full_song"（创作新歌词）或 "edit"（编辑现有歌词）
             prompt: 歌词描述或主题提示词
             model: 模型名称，默认 lyrics_generation-highspeed
-            genre: 音乐流派，可选
-            theme: 歌词主题，可选
-            max_tokens: 最大生成 token 数
-            temperature: 温度参数
-            timeout: 超时时间
+            timeout: 超时时间，默认 30 秒
 
         Returns:
             包含生成歌词的字典
@@ -150,15 +163,9 @@ class LyricsGenerationHighspeed:
 
         payload = {
             "model": model,
+            "mode": mode,
             "prompt": prompt,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
         }
-
-        if genre is not None:
-            payload["genre"] = genre
-        if theme is not None:
-            payload["theme"] = theme
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
@@ -206,3 +213,31 @@ class LyricsGenerationHighspeed:
                 "error": str(e),
                 "base_resp": {"status_code": -4, "status_msg": str(e)},
             }
+
+    def write_full_song(self, prompt: str, model: str = "lyrics_generation-highspeed", timeout: int = 30) -> Dict[str, Any]:
+        """
+        极速版创作完整歌词
+
+        Args:
+            prompt: 歌词描述或主题提示词
+            model: 模型名称，默认 lyrics_generation-highspeed
+            timeout: 超时时间，默认 30 秒
+
+        Returns:
+            包含生成歌词的字典
+        """
+        return self.generate(mode="write_full_song", prompt=prompt, model=model, timeout=timeout)
+
+    def edit(self, prompt: str, model: str = "lyrics_generation-highspeed", timeout: int = 30) -> Dict[str, Any]:
+        """
+        极速版编辑歌词
+
+        Args:
+            prompt: 歌词编辑提示词
+            model: 模型名称，默认 lyrics_generation-highspeed
+            timeout: 超时时间，默认 30 秒
+
+        Returns:
+            包含生成歌词的字典
+        """
+        return self.generate(mode="edit", prompt=prompt, model=model, timeout=timeout)

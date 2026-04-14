@@ -1,7 +1,8 @@
 import requests
 from typing import Dict, Any, List, Optional
 
-
+# api
+# https://platform.minimaxi.com/docs/api-reference/music-generation
 class Music26:
     BASE_URL = "https://api.minimaxi.com"
     GROUP_ID = ""
@@ -13,6 +14,7 @@ class Music26:
     def generate(
         self,
         prompt: str,
+        lyrics: str,
         model: str = "music-2.6",
         output_token_limit: int = 2048,
         duration: Optional[int] = None,
@@ -27,6 +29,7 @@ class Music26:
 
         Args:
             prompt: 音乐描述提示词
+            lyrics: 歌词内容（必需）
             model: 模型名称，默认 music-2.6
             output_token_limit: 输出 token 限制，默认 2048
             duration: 音乐时长（秒），可选
@@ -48,6 +51,7 @@ class Music26:
         payload = {
             "model": model,
             "prompt": prompt,
+            "lyrics": lyrics,
             "output_token_limit": output_token_limit,
         }
 
@@ -106,7 +110,7 @@ class Music26:
             }
 
 
-class Music26Highspeed:
+class Music26Free:
     BASE_URL = "https://api.minimaxi.com"
     GROUP_ID = ""
 
@@ -117,7 +121,8 @@ class Music26Highspeed:
     def generate(
         self,
         prompt: str,
-        model: str = "music-2.6-highspeed",
+        lyrics: str,
+        model: str = "music-2.6-free",
         output_token_limit: int = 2048,
         duration: Optional[int] = None,
         style: Optional[str] = None,
@@ -125,13 +130,14 @@ class Music26Highspeed:
         timeout: int = 60,
     ) -> Dict[str, Any]:
         """
-        Music 2.6 极速版音乐生成
+        Music 2.6 Free 音乐生成
 
-        效果不变，更快更敏捷
+        免费版本音乐生成，适合测试和轻量级使用
 
         Args:
             prompt: 音乐描述提示词
-            model: 模型名称，默认 music-2.6-highspeed
+            lyrics: 歌词内容（必需）
+            model: 模型名称，默认 music-2.6-free
             output_token_limit: 输出 token 限制，默认 2048
             duration: 音乐时长（秒），可选
             style: 音乐风格，可选
@@ -152,6 +158,7 @@ class Music26Highspeed:
         payload = {
             "model": model,
             "prompt": prompt,
+            "lyrics": lyrics,
             "output_token_limit": output_token_limit,
         }
 
