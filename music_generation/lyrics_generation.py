@@ -1,8 +1,8 @@
 import requests
-from typing import Any, Dict
+from typing import Dict, Any, Optional
 
 
-class Speech26HD:
+class LyricsGeneration:
     BASE_URL = "https://api.minimaxi.com"
     GROUP_ID = ""
 
@@ -10,41 +10,35 @@ class Speech26HD:
         self.api_key = api_key
         self.group_id = group_id or self.GROUP_ID
 
-    def synthesize(
+    def generate(
         self,
-        text: str,
-        voice_id: str = "male-qn-qingse",
-        model: str = "speech-2.6-hd",
-        speed: float = 1.0,
-        volume: float = 1.0,
-        pitch: float = 0,
-        audio_format: str = "mp3",
-        sample_rate: int = 32000,
-        bitrate: int = 128000,
-        timeout: int = 60,
+        prompt: str,
+        model: str = "lyrics_generation",
+        genre: Optional[str] = None,
+        theme: Optional[str] = None,
+        max_tokens: int = 1024,
+        temperature: float = 0.8,
+        timeout: int = 30,
     ) -> Dict[str, Any]:
         """
-        Speech 2.6 HD 同步语音合成
+        Lyrics Generation 歌词生成
 
-        HD 模型，韵律表现出色，极致音质与韵律表现，生成更快更自然
+        根据提示词生成完整的歌词内容
 
         Args:
-            text: 待合成文本，最大 10,000 字符
-            voice_id: 音色 ID，默认 male-qn-qingse
-            model: 模型名称，默认 speech-2.6-hd
-            speed: 语速，默认 1.0 (范围 0.5-2.0)
-            volume: 音量，默认 1.0 (范围 0.1-10.0)
-            pitch: 语调，默认 0 (范围 -12-12)
-            audio_format: 音频格式，支持 mp3/pcm/flac/wav
-            sample_rate: 采样率，默认 32000
-            bitrate: 比特率，默认 128000
-            timeout: 超时时间，默认 60 秒
+            prompt: 歌词描述或主题提示词
+            model: 模型名称，默认 lyrics_generation
+            genre: 音乐流派（如 "pop", "rock", "ballad"），可选
+            theme: 歌词主题（如 "love", "nature", "life"），可选
+            max_tokens: 最大生成 token 数，默认 1024
+            temperature: 温度参数，默认 0.8
+            timeout: 超时时间，默认 30 秒
 
         Returns:
-            包含音频数据的字典
+            包含生成歌词的字典
         """
         group_param = f"?GroupId={self.group_id}" if self.group_id else ""
-        url = f"{self.BASE_URL}/v1/t2a_v2{group_param}"
+        url = f"{self.BASE_URL}/v1/lyrics_generation{group_param}"
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -53,19 +47,15 @@ class Speech26HD:
 
         payload = {
             "model": model,
-            "text": text,
-            "voice_setting": {
-                "voice_id": voice_id,
-                "speed": speed,
-                "vol": volume,
-                "pitch": pitch,
-            },
-            "audio_setting": {
-                "format": audio_format,
-                "sample_rate": sample_rate,
-                "bitrate": bitrate,
-            },
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
         }
+
+        if genre is not None:
+            payload["genre"] = genre
+        if theme is not None:
+            payload["theme"] = theme
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
@@ -115,7 +105,7 @@ class Speech26HD:
             }
 
 
-class Speech26Turbo:
+class LyricsGenerationHighspeed:
     BASE_URL = "https://api.minimaxi.com"
     GROUP_ID = ""
 
@@ -123,41 +113,35 @@ class Speech26Turbo:
         self.api_key = api_key
         self.group_id = group_id or self.GROUP_ID
 
-    def synthesize(
+    def generate(
         self,
-        text: str,
-        voice_id: str = "male-qn-qingse",
-        model: str = "speech-2.6-turbo",
-        speed: float = 1.0,
-        volume: float = 1.0,
-        pitch: float = 0,
-        audio_format: str = "mp3",
-        sample_rate: int = 32000,
-        bitrate: int = 128000,
-        timeout: int = 60,
+        prompt: str,
+        model: str = "lyrics_generation-highspeed",
+        genre: Optional[str] = None,
+        theme: Optional[str] = None,
+        max_tokens: int = 1024,
+        temperature: float = 0.8,
+        timeout: int = 30,
     ) -> Dict[str, Any]:
         """
-        Speech 2.6 Turbo 同步语音合成
+        Lyrics Generation 极速版歌词生成
 
-        Turbo 模型，音质优异，超低时延，响应更灵敏
+        效果不变，更快更敏捷
 
         Args:
-            text: 待合成文本，最大 10,000 字符
-            voice_id: 音色 ID
-            model: 模型名称，默认 speech-2.6-turbo
-            speed: 语速
-            volume: 音量
-            pitch: 语调
-            audio_format: 音频格式
-            sample_rate: 采样率
-            bitrate: 比特率
+            prompt: 歌词描述或主题提示词
+            model: 模型名称，默认 lyrics_generation-highspeed
+            genre: 音乐流派，可选
+            theme: 歌词主题，可选
+            max_tokens: 最大生成 token 数
+            temperature: 温度参数
             timeout: 超时时间
 
         Returns:
-            包含音频数据的字典
+            包含生成歌词的字典
         """
         group_param = f"?GroupId={self.group_id}" if self.group_id else ""
-        url = f"{self.BASE_URL}/v1/t2a_v2{group_param}"
+        url = f"{self.BASE_URL}/v1/lyrics_generation{group_param}"
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -166,19 +150,15 @@ class Speech26Turbo:
 
         payload = {
             "model": model,
-            "text": text,
-            "voice_setting": {
-                "voice_id": voice_id,
-                "speed": speed,
-                "vol": volume,
-                "pitch": pitch,
-            },
-            "audio_setting": {
-                "format": audio_format,
-                "sample_rate": sample_rate,
-                "bitrate": bitrate,
-            },
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
         }
+
+        if genre is not None:
+            payload["genre"] = genre
+        if theme is not None:
+            payload["theme"] = theme
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)

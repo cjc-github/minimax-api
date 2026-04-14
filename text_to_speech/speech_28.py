@@ -1,5 +1,5 @@
 import requests
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 class Speech28HD:
@@ -21,7 +21,7 @@ class Speech28HD:
         audio_format: str = "mp3",
         sample_rate: int = 32000,
         bitrate: int = 128000,
-        timeout: int = 60
+        timeout: int = 60,
     ) -> Dict[str, Any]:
         """
         Speech 2.8 HD 同步语音合成
@@ -48,7 +48,7 @@ class Speech28HD:
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         payload = {
@@ -58,60 +58,60 @@ class Speech28HD:
                 "voice_id": voice_id,
                 "speed": speed,
                 "vol": volume,
-                "pitch": pitch
+                "pitch": pitch,
             },
             "audio_setting": {
                 "format": audio_format,
                 "sample_rate": sample_rate,
-                "bitrate": bitrate
-            }
+                "bitrate": bitrate,
+            },
         }
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
-            
+
             if response.status_code != 200:
                 print(f"HTTP 错误: {response.status_code}")
                 print(f"响应内容: {response.text}")
                 return {
                     "success": False,
                     "error": f"HTTP {response.status_code}: {response.text}",
-                    "base_resp": {"status_code": response.status_code, "status_msg": response.text}
+                    "base_resp": {"status_code": response.status_code, "status_msg": response.text},
                 }
-            
+
             result = response.json()
             if result is None:
-                print(f"警告: 响应 JSON 为 None")
+                print("警告: 响应 JSON 为 None")
                 print(f"响应状态码: {response.status_code}")
                 print(f"响应内容: {response.text}")
                 return {
                     "success": False,
                     "error": "响应内容为空",
-                    "base_resp": {"status_code": -1, "status_msg": "Empty response"}
+                    "base_resp": {"status_code": -1, "status_msg": "Empty response"},
                 }
-            
+
             return result
-            
+
         except requests.exceptions.Timeout:
-            print(f"错误: 请求超时")
+            print("错误: 请求超时")
             return {
                 "success": False,
                 "error": "请求超时",
-                "base_resp": {"status_code": -2, "status_msg": "Timeout"}
+                "base_resp": {"status_code": -2, "status_msg": "Timeout"},
             }
         except requests.exceptions.RequestException as e:
             print(f"错误: 网络请求失败 - {e}")
             return {
                 "success": False,
                 "error": f"网络请求失败: {e}",
-                "base_resp": {"status_code": -3, "status_msg": str(e)}
+                "base_resp": {"status_code": -3, "status_msg": str(e)},
             }
         except Exception as e:
             print(f"错误: {e}")
             return {
                 "success": False,
                 "error": str(e),
-                "base_resp": {"status_code": -4, "status_msg": str(e)}
+                "base_resp": {"status_code": -4, "status_msg": str(e)},
             }
 
 
@@ -134,7 +134,7 @@ class Speech28Turbo:
         audio_format: str = "mp3",
         sample_rate: int = 32000,
         bitrate: int = 128000,
-        timeout: int = 60
+        timeout: int = 60,
     ) -> Dict[str, Any]:
         """
         Speech 2.8 Turbo 同步语音合成
@@ -161,7 +161,7 @@ class Speech28Turbo:
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         payload = {
@@ -171,58 +171,58 @@ class Speech28Turbo:
                 "voice_id": voice_id,
                 "speed": speed,
                 "vol": volume,
-                "pitch": pitch
+                "pitch": pitch,
             },
             "audio_setting": {
                 "format": audio_format,
                 "sample_rate": sample_rate,
-                "bitrate": bitrate
-            }
+                "bitrate": bitrate,
+            },
         }
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
-            
+
             if response.status_code != 200:
                 print(f"HTTP 错误: {response.status_code}")
                 print(f"响应内容: {response.text}")
                 return {
                     "success": False,
                     "error": f"HTTP {response.status_code}: {response.text}",
-                    "base_resp": {"status_code": response.status_code, "status_msg": response.text}
+                    "base_resp": {"status_code": response.status_code, "status_msg": response.text},
                 }
-            
+
             result = response.json()
             if result is None:
-                print(f"警告: 响应 JSON 为 None")
+                print("警告: 响应 JSON 为 None")
                 print(f"响应状态码: {response.status_code}")
                 print(f"响应内容: {response.text}")
                 return {
                     "success": False,
                     "error": "响应内容为空",
-                    "base_resp": {"status_code": -1, "status_msg": "Empty response"}
+                    "base_resp": {"status_code": -1, "status_msg": "Empty response"},
                 }
-            
+
             return result
-            
+
         except requests.exceptions.Timeout:
-            print(f"错误: 请求超时")
+            print("错误: 请求超时")
             return {
                 "success": False,
                 "error": "请求超时",
-                "base_resp": {"status_code": -2, "status_msg": "Timeout"}
+                "base_resp": {"status_code": -2, "status_msg": "Timeout"},
             }
         except requests.exceptions.RequestException as e:
             print(f"错误: 网络请求失败 - {e}")
             return {
                 "success": False,
                 "error": f"网络请求失败: {e}",
-                "base_resp": {"status_code": -3, "status_msg": str(e)}
+                "base_resp": {"status_code": -3, "status_msg": str(e)},
             }
         except Exception as e:
             print(f"错误: {e}")
             return {
                 "success": False,
                 "error": str(e),
-                "base_resp": {"status_code": -4, "status_msg": str(e)}
+                "base_resp": {"status_code": -4, "status_msg": str(e)},
             }

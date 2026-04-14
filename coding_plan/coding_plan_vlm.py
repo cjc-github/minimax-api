@@ -1,8 +1,8 @@
 import requests
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
-class Speech26HD:
+class CodingPlanVLM:
     BASE_URL = "https://api.minimaxi.com"
     GROUP_ID = ""
 
@@ -10,41 +10,33 @@ class Speech26HD:
         self.api_key = api_key
         self.group_id = group_id or self.GROUP_ID
 
-    def synthesize(
+    def analyze(
         self,
-        text: str,
-        voice_id: str = "male-qn-qingse",
-        model: str = "speech-2.6-hd",
-        speed: float = 1.0,
-        volume: float = 1.0,
-        pitch: float = 0,
-        audio_format: str = "mp3",
-        sample_rate: int = 32000,
-        bitrate: int = 128000,
-        timeout: int = 60,
+        image_url: str,
+        prompt: str,
+        model: str = "coding-plan-vlm",
+        max_tokens: int = 2048,
+        temperature: float = 0.7,
+        timeout: int = 30,
     ) -> Dict[str, Any]:
         """
-        Speech 2.6 HD 同步语音合成
+        Coding Plan VLM 视觉语言模型分析
 
-        HD 模型，韵律表现出色，极致音质与韵律表现，生成更快更自然
+        分析代码截图或图表，生成编码计划
 
         Args:
-            text: 待合成文本，最大 10,000 字符
-            voice_id: 音色 ID，默认 male-qn-qingse
-            model: 模型名称，默认 speech-2.6-hd
-            speed: 语速，默认 1.0 (范围 0.5-2.0)
-            volume: 音量，默认 1.0 (范围 0.1-10.0)
-            pitch: 语调，默认 0 (范围 -12-12)
-            audio_format: 音频格式，支持 mp3/pcm/flac/wav
-            sample_rate: 采样率，默认 32000
-            bitrate: 比特率，默认 128000
-            timeout: 超时时间，默认 60 秒
+            image_url: 图像 URL 地址
+            prompt: 分析提示词
+            model: 模型名称，默认 coding-plan-vlm
+            max_tokens: 最大生成 token 数，默认 2048
+            temperature: 温度参数，默认 0.7
+            timeout: 超时时间，默认 30 秒
 
         Returns:
-            包含音频数据的字典
+            包含分析结果的字典
         """
         group_param = f"?GroupId={self.group_id}" if self.group_id else ""
-        url = f"{self.BASE_URL}/v1/t2a_v2{group_param}"
+        url = f"{self.BASE_URL}/v1/coding_plan_vlm{group_param}"
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -53,18 +45,10 @@ class Speech26HD:
 
         payload = {
             "model": model,
-            "text": text,
-            "voice_setting": {
-                "voice_id": voice_id,
-                "speed": speed,
-                "vol": volume,
-                "pitch": pitch,
-            },
-            "audio_setting": {
-                "format": audio_format,
-                "sample_rate": sample_rate,
-                "bitrate": bitrate,
-            },
+            "image_url": image_url,
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
         }
 
         try:
@@ -114,50 +98,35 @@ class Speech26HD:
                 "base_resp": {"status_code": -4, "status_msg": str(e)},
             }
 
-
-class Speech26Turbo:
-    BASE_URL = "https://api.minimaxi.com"
-    GROUP_ID = ""
-
-    def __init__(self, api_key: str, group_id: str = ""):
-        self.api_key = api_key
-        self.group_id = group_id or self.GROUP_ID
-
-    def synthesize(
+    def generate_plan(
         self,
-        text: str,
-        voice_id: str = "male-qn-qingse",
-        model: str = "speech-2.6-turbo",
-        speed: float = 1.0,
-        volume: float = 1.0,
-        pitch: float = 0,
-        audio_format: str = "mp3",
-        sample_rate: int = 32000,
-        bitrate: int = 128000,
-        timeout: int = 60,
+        description: str,
+        language: Optional[str] = None,
+        framework: Optional[str] = None,
+        model: str = "coding-plan-vlm",
+        max_tokens: int = 2048,
+        temperature: float = 0.7,
+        timeout: int = 30,
     ) -> Dict[str, Any]:
         """
-        Speech 2.6 Turbo 同步语音合成
+        Coding Plan VLM 生成编码计划
 
-        Turbo 模型，音质优异，超低时延，响应更灵敏
+        根据描述生成详细的编码计划
 
         Args:
-            text: 待合成文本，最大 10,000 字符
-            voice_id: 音色 ID
-            model: 模型名称，默认 speech-2.6-turbo
-            speed: 语速
-            volume: 音量
-            pitch: 语调
-            audio_format: 音频格式
-            sample_rate: 采样率
-            bitrate: 比特率
-            timeout: 超时时间
+            description: 功能描述
+            language: 编程语言，可选（如 "python", "javascript", "java"）
+            framework: 框架，可选（如 "react", "vue", "django"）
+            model: 模型名称，默认 coding-plan-vlm
+            max_tokens: 最大生成 token 数，默认 2048
+            temperature: 温度参数，默认 0.7
+            timeout: 超时时间，默认 30 秒
 
         Returns:
-            包含音频数据的字典
+            包含编码计划的字典
         """
         group_param = f"?GroupId={self.group_id}" if self.group_id else ""
-        url = f"{self.BASE_URL}/v1/t2a_v2{group_param}"
+        url = f"{self.BASE_URL}/v1/coding_plan_vlm{group_param}"
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -166,19 +135,15 @@ class Speech26Turbo:
 
         payload = {
             "model": model,
-            "text": text,
-            "voice_setting": {
-                "voice_id": voice_id,
-                "speed": speed,
-                "vol": volume,
-                "pitch": pitch,
-            },
-            "audio_setting": {
-                "format": audio_format,
-                "sample_rate": sample_rate,
-                "bitrate": bitrate,
-            },
+            "description": description,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
         }
+
+        if language is not None:
+            payload["language"] = language
+        if framework is not None:
+            payload["framework"] = framework
 
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
